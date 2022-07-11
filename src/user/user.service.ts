@@ -21,14 +21,18 @@ export class UserService {
     return user;
   }
   async create(user: CreateUserDTO) {
-    users.push({
+    const newUser = {
       id: uuidv4(),
       ...user,
       version: 1,
       createdAt: new Date().valueOf(),
       updatedAt: new Date().valueOf(),
-    });
-    return users[users.length - 1];
+    };
+    users.push(newUser);
+    const ansUser = Object.assign({}, newUser);
+    delete ansUser.password;
+
+    return ansUser;
   }
   async remove(id: string) {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
@@ -36,16 +40,21 @@ export class UserService {
     if (index === -1) throw new NotFoundException('User not found');
     users.splice(index, 1);
   }
-  async update(id: string, user: UpdatePasswordDto) {
+  async update(id: string, user: UpdatePasswordDto) {   
     const userUpd = await this.findbyId(id);
 
-    if (user.oldPassowrd !== userUpd.password)
+
+
+    if (user.oldPassword !== userUpd.password)
       throw new ForbiddenException('old password is wrong');
 
     userUpd.password = user.newPassword;
     userUpd.updatedAt = new Date().valueOf();
     userUpd.version = userUpd.version + 1;
 
-    return userUpd;
+    const ansUser = Object.assign({}, userUpd);
+    delete ansUser.password;
+
+    return ansUser;
   }
 }

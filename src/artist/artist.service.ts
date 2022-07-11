@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { artists } from 'src/memoryBd/bd';
 import { CreateArtistDTO } from './DTO/create-artist-dto';
 import { FullArtistDto } from './DTO/full-arist-dto';
@@ -21,6 +21,7 @@ export class ArtistService {
   }
   remove(id: string): string {
     const index = artists.findIndex((item) => item.id == id);
+    if(!index) throw new NotFoundException()
     artists.splice(index, 1);
     return `Deleted ${id}`;
   }

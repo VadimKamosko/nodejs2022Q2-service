@@ -18,16 +18,16 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get()
-  async findAll(): Promise<FullUserDto[]> {
-    return await this.userService.getAll();
+   findAll(): Promise<FullUserDto[]> {
+    return  this.userService.getAll();
   }
   @Get(':id')
-  async findByid(@Param('id') id): Promise<FullUserDto> {
-    return await this.userService.findbyId(id);
+   findByid(@Param('id') id): Promise<FullUserDto> {
+    return  this.userService.findbyId(id);
   }
   @Post()
-  async addNewUser(@Body() CreateUserDto: CreateUserDTO): Promise<FullUserDto> {
-    return await this.userService.create(CreateUserDto);
+   addNewUser(@Body() CreateUserDto: CreateUserDTO): Promise<FullUserDto> {
+    return  this.userService.create(CreateUserDto);
   }
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
@@ -36,10 +36,10 @@ export class UserController {
   }
 
   @Put(':id')
-  async updateUser(
+   updateUser(
     @Body() body: UpdatePasswordDto,
     @Param('id') id,
   ): Promise<FullUserDto> {
-    return await this.userService.update(id, body);
+    return  this.userService.update(id, body);
   }
 }

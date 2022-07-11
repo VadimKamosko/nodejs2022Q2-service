@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -18,7 +20,7 @@ export class AlbumController {
     return this.albumservice.getAll();
   }
   @Get(':id')
-  getbyId(@Param('id') id): CreateAlbumDTO {
+  getbyId(@Param('id') id): Promise<CreateAlbumDTO> {
     return this.albumservice.getById(id);
   }
   @Post()
@@ -26,11 +28,15 @@ export class AlbumController {
     return this.albumservice.create(body);
   }
   @Put(':id')
-  update(@Param('id') id, @Body() body: CreateAlbumDTO): string {
+  update(
+    @Param('id') id,
+    @Body() body: CreateAlbumDTO,
+  ): Promise<CreateAlbumDTO> {
     return this.albumservice.update(id, body);
   }
   @Delete(':id')
-  remove(@Param('id') id): string {
-    return this.albumservice.remove(id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id') id) {
+    await this.albumservice.remove(id);
   }
 }
