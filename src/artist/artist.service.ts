@@ -1,38 +1,44 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { artists } from 'src/memoryBd/bd';
 import { CreateArtistDTO } from './DTO/create-artist-dto';
 import { FullArtistDto } from './DTO/full-arist-dto';
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
 
 @Injectable()
 export class ArtistService {
   getAll(): FullArtistDto[] {
     return artists;
   }
-  getById(id: string): FullArtistDto {
-    return artists.find((item) => item.id === id);
+  async getById(id: string): Promise<FullArtistDto> {
+    if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
+    const artist = await artists.find((item) => item.id === id);
+    if (!artist) throw new NotFoundException('Album not found');
+    return artist;
   }
   create(body: CreateArtistDTO): FullArtistDto {
-    artists.push({
+    const art = {
       id: uuidv4(),
       ...body,
-    });
-    return artists[artists.length - 1];
+    };
+    artists.push(art);
+    return art;
   }
-  remove(id: string): string {
-    const index = artists.findIndex((item) => item.id == id);
-    if(!index) throw new NotFoundException()
+  async remove(id: string) {
+    if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
+    const index = await artists.findIndex((item) => item.id === id);
+    if (index === -1) throw new NotFoundException('User not found');
     artists.splice(index, 1);
-    return `Deleted ${id}`;
   }
-  update(id: string, body: CreateArtistDTO): FullArtistDto {
-    artists.map((item: FullArtistDto) => {
-      if (item.id == id) {
-        if (body.name) item.name = body.name;
-        if (body.name) item.grammy = body.grammy;
-      }
-      return item;
-    });
-    return this.getById(id);
+  async update(id: string, body: CreateArtistDTO): Promise<FullArtistDto> {
+    const art = await this.getById(id);
+
+    if (body.name) art.name = body.name;
+    if (body.grammy) art.grammy = body.grammy;
+
+    return art;
   }
 }

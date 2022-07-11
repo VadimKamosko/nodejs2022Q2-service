@@ -11,6 +11,7 @@ import {
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { CreateArtistDTO } from './DTO/create-artist-dto';
+import { FullArtistDto } from './DTO/full-arist-dto';
 
 @Controller('artist')
 export class ArtistController {
@@ -20,7 +21,7 @@ export class ArtistController {
     return this.artistServise.getAll();
   }
   @Get(':id')
-  getById(@Param('id') id) {
+  getById(@Param('id') id):Promise<FullArtistDto> {
     return this.artistServise.getById(id);
   }
   @Put(':id')
@@ -33,7 +34,8 @@ export class ArtistController {
     return this.artistServise.create(body);
   }
   @Delete(':id')
-  renove(@Param('id') id) {
-    return this.artistServise.remove(id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async renove(@Param('id') id) {
+    await this.artistServise.remove(id);
   }
 }
