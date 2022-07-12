@@ -1,6 +1,7 @@
 import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
-export class FullArtistDto {
+export class Artist {
+  @IsString()
   id: string;
   @IsNotEmpty({ message: 'The required name field is missing' })
   @IsString()

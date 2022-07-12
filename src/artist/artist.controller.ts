@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { ArtistService } from './artist.service';
 import { CreateArtistDTO } from './DTO/create-artist-dto';
-import { FullArtistDto } from './DTO/full-arist-dto';
+import { Artist } from './DTO/full-arist-dto';
 
 @Controller('artist')
 export class ArtistController {
@@ -21,7 +21,7 @@ export class ArtistController {
     return this.artistServise.getAll();
   }
   @Get(':id')
-  getById(@Param('id') id):Promise<FullArtistDto> {
+  getById(@Param('id') id):Promise<Artist> {
     return this.artistServise.getById(id);
   }
   @Put(':id')

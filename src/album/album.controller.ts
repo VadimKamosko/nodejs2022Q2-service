@@ -10,6 +10,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { AlbumService } from './album.service';
+import { Album } from './DTO/album';
 import { CreateAlbumDTO } from './DTO/create-album-dto';
 
 @Controller('album')
@@ -20,18 +21,18 @@ export class AlbumController {
     return this.albumservice.getAll();
   }
   @Get(':id')
-  getbyId(@Param('id') id): Promise<CreateAlbumDTO> {
+  getbyId(@Param('id') id): Promise<Album> {
     return this.albumservice.getById(id);
   }
   @Post()
-  create(@Body() body: CreateAlbumDTO): CreateAlbumDTO {
+  create(@Body() body: CreateAlbumDTO): Album {
     return this.albumservice.create(body);
   }
   @Put(':id')
   update(
     @Param('id') id,
     @Body() body: CreateAlbumDTO,
-  ): Promise<CreateAlbumDTO> {
+  ): Promise<Album> {
     return this.albumservice.update(id, body);
   }
   @Delete(':id')

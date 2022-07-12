@@ -1,11 +1,13 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class UpdateTrackDTO {
+export class Track {
+  id: string;
   @IsNotEmpty({ message: 'The required name field is missing' })
+  @IsString()
   name: string;
-  @IsNotEmpty({ message: 'The required artistId field is missing' })
-  artistId: string;
+  artistId: string | null;
   albumId: string | null;
   @IsNotEmpty({ message: 'The required duration field is missing' })
+  @IsNumber()
   duration: number;
 }

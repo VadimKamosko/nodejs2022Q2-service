@@ -3,35 +3,39 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Put,
 } from '@nestjs/common';
 import { TrackcCreateDTO } from './DTO/create-track-dto';
-import { UpdateTrackDTO } from './DTO/update-track-dto';
+import { Track } from './DTO/Track';
+
 import { TrackService } from './track.service';
 
 @Controller('track')
 export class TrackController {
   constructor(private readonly trackservice: TrackService) {}
   @Get()
-  findAll(): TrackcCreateDTO[] {
+  findAll(): Track[] {
     return this.trackservice.getAll();
   }
   @Get(':id')
-  getById(@Param('id') id): TrackcCreateDTO {
+  getById(@Param('id') id): Promise<Track> {
     return this.trackservice.getById(id);
   }
   @Post()
-  create(@Body() track: UpdateTrackDTO): TrackcCreateDTO {
+  create(@Body() track: TrackcCreateDTO): Track {
     return this.trackservice.create(track);
   }
   @Put(':id')
-  update(@Param('id') id, @Body() track: UpdateTrackDTO): string {
+  update(@Param('id') id, @Body() track: TrackcCreateDTO): Promise<Track> {
     return this.trackservice.update(id, track);
   }
   @Delete(':id')
-  remove(@Param('id') id): string {
-    return this.trackservice.remove(id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id') id) {
+    await this.trackservice.remove(id);
   }
 }

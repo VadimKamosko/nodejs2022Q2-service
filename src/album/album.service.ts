@@ -7,28 +7,29 @@ import { CreateAlbumDTO } from './DTO/create-album-dto';
 import { albums } from 'src/memoryBd/bd';
 import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
 import { ArtistService } from 'src/artist/artist.service';
+import { Album } from './DTO/album';
 
 const artSer = new ArtistService();
 
 @Injectable()
 export class AlbumService {
-  getAll(): CreateAlbumDTO[] {
+  getAll(): Album[] {
     return albums;
   }
-  async getById(id: string): Promise<CreateAlbumDTO> {
+  async getById(id: string): Promise<Album> {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
     const album = await albums.find((item) => item.id === id);
     if (!album) throw new NotFoundException('Album not found');
     return album;
   }
-  create(albumsB: CreateAlbumDTO): CreateAlbumDTO {   
+  create(albumsB: CreateAlbumDTO): Album {
     // if (!artSer.getById(albumsB.artistId)) throw new BadRequestException();
     const alb = {
       id: uuidv4(),
       ...albumsB,
     };
     albums.push(alb);
-    
+
     return alb;
   }
   async remove(id: string) {

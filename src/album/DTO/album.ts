@@ -1,6 +1,9 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class CreateAlbumDTO {
+export class Album {
+  @IsNotEmpty({ message: 'The required oldPassword name is missing' })
+  @IsString()
+  id: string;
   @IsNotEmpty({ message: 'The required oldPassword name is missing' })
   @IsString()
   name: string;
