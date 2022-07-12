@@ -1,27 +1,29 @@
 import {
   BadRequestException,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { Track } from './DTO/Track';
 import { track } from 'src/memoryBd/bd';
 import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
-import { ArtistService } from 'src/artist/artist.service';
-import { AlbumService } from 'src/album/album.service';
 import { TrackcCreateDTO } from './DTO/create-track-dto';
-
-const artSer = new ArtistService();
-const albSer = new AlbumService();
+import { FavsService } from 'src/favs/favs.service';
 
 @Injectable()
 export class TrackService {
+  constructor(
+    @Inject(forwardRef(() => FavsService))
+    private readonly favService: FavsService,
+  ) {}
   getAll(): Track[] {
     return track;
   }
   async getById(id: string): Promise<Track> {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
     const trackFind = await track.find((i) => i.id === id);
-    if (!trackFind) throw new NotFoundException('User not found');
+    if (!trackFind) throw new NotFoundException('Track not found');
     return trackFind;
   }
   create(trackB: TrackcCreateDTO): Track {
@@ -39,6 +41,7 @@ export class TrackService {
     const index = await track.findIndex((item) => item.id === id);
     if (index === -1) throw new NotFoundException('Track not found');
     track.splice(index, 1);
+    await this.favService.removeFavTrack(id);
   }
   async update(id: string, trackB: TrackcCreateDTO): Promise<Track> {
     const UpdTrack = await this.getById(id);
