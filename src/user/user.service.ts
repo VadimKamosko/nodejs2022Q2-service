@@ -8,6 +8,7 @@ import { users } from 'src/memoryBd/bd';
 import { CreateUserDTO } from './DTO/create-user-dto';
 import { UpdatePasswordDto } from './DTO/update-user-dto';
 import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
+import { FullUserDto } from './DTO/full-user.dto';
 
 @Injectable()
 export class UserService {
@@ -20,7 +21,7 @@ export class UserService {
     if (!user) throw new NotFoundException('User not found');
     return user;
   }
-  async create(user: CreateUserDTO) {
+  async create(user: CreateUserDTO): Promise<FullUserDto> {
     const newUser = {
       id: uuidv4(),
       ...user,
@@ -29,10 +30,10 @@ export class UserService {
       updatedAt: new Date().valueOf(),
     };
     users.push(newUser);
-    const ansUser = Object.assign({}, newUser);
-    delete ansUser.password;
+    // const ansUser = Object.assign({}, newUser);
+    // delete ansUser.password;
 
-    return ansUser;
+    return newUser;
   }
   async remove(id: string) {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
@@ -40,10 +41,8 @@ export class UserService {
     if (index === -1) throw new NotFoundException('User not found');
     users.splice(index, 1);
   }
-  async update(id: string, user: UpdatePasswordDto) {   
+  async update(id: string, user: UpdatePasswordDto) {
     const userUpd = await this.findbyId(id);
-
-
 
     if (user.oldPassword !== userUpd.password)
       throw new ForbiddenException('old password is wrong');
@@ -52,9 +51,9 @@ export class UserService {
     userUpd.updatedAt = new Date().valueOf();
     userUpd.version = userUpd.version + 1;
 
-    const ansUser = Object.assign({}, userUpd);
-    delete ansUser.password;
+    // const ansUser = Object.assign({}, userUpd);
+    // delete ansUser.password;
 
-    return ansUser;
+    return userUpd;
   }
 }

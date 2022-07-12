@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -8,6 +9,7 @@ import {
   Param,
   Post,
   Put,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CreateUserDTO } from './DTO/create-user-dto';
 import { FullUserDto } from './DTO/full-user.dto';
@@ -18,28 +20,29 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
   @Get()
-   findAll(): Promise<FullUserDto[]> {
-    return  this.userService.getAll();
+  findAll(): Promise<FullUserDto[]> {
+    return this.userService.getAll();
   }
   @Get(':id')
-   findByid(@Param('id') id): Promise<FullUserDto> {
-    return  this.userService.findbyId(id);
+  findByid(@Param('id') id): Promise<FullUserDto> {
+    return this.userService.findbyId(id);
   }
+  @UseInterceptors(ClassSerializerInterceptor)
   @Post()
-   addNewUser(@Body() CreateUserDto: CreateUserDTO): Promise<FullUserDto> {
-    return  this.userService.create(CreateUserDto);
+  async addNewUser(@Body() CreateUserDto: CreateUserDTO): Promise<FullUserDto> {
+    return new FullUserDto(await this.userService.create(CreateUserDto));
   }
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id) {
     await this.userService.remove(id);
   }
-
+  @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
-   updateUser(
+  async updateUser(
     @Body() body: UpdatePasswordDto,
     @Param('id') id,
   ): Promise<FullUserDto> {
-    return  this.userService.update(id, body);
+    return new FullUserDto(await this.userService.update(id, body));
   }
 }
