@@ -56,4 +56,9 @@ export class AlbumService {
 
     return albUpdate;
   }
+
+  removeArtCascade(id: string) {
+    for (let i = 0; i < albums.length; i++)
+      if (albums[i].artistId === id) albums[i].artistId = null;
+  }
 }

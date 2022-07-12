@@ -11,6 +11,7 @@ import { Artist } from './DTO/full-arist-dto';
 import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
 import { FavsService } from 'src/favs/favs.service';
 import { TrackService } from 'src/track/track.service';
+import { AlbumService } from 'src/album/album.service';
 
 @Injectable()
 export class ArtistService {
@@ -19,6 +20,8 @@ export class ArtistService {
     private readonly favService: FavsService,
 
     private readonly trackSer: TrackService,
+
+    private readonly albServ: AlbumService,
   ) {}
 
   getAll(): Artist[] {
@@ -46,6 +49,7 @@ export class ArtistService {
     artists.splice(index, 1);
     this.favService.removeFavArtist(id);
     this.trackSer.removeCascadeArt(id);
+    this.albServ.removeArtCascade(id);
   }
   async update(id: string, body: CreateArtistDTO): Promise<Artist> {
     const art = await this.getById(id);
