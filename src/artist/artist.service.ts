@@ -10,12 +10,15 @@ import { CreateArtistDTO } from './DTO/create-artist-dto';
 import { Artist } from './DTO/full-arist-dto';
 import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
 import { FavsService } from 'src/favs/favs.service';
+import { TrackService } from 'src/track/track.service';
 
 @Injectable()
 export class ArtistService {
   constructor(
     @Inject(forwardRef(() => FavsService))
     private readonly favService: FavsService,
+
+    private readonly trackSer: TrackService,
   ) {}
 
   getAll(): Artist[] {
@@ -42,6 +45,7 @@ export class ArtistService {
     if (index === -1) throw new NotFoundException('Artist not found');
     artists.splice(index, 1);
     this.favService.removeFavArtist(id);
+    this.trackSer.removeCascadeArt(id);
   }
   async update(id: string, body: CreateArtistDTO): Promise<Artist> {
     const art = await this.getById(id);

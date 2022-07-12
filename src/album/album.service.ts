@@ -10,12 +10,15 @@ import { albums } from 'src/memoryBd/bd';
 import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
 import { Album } from './DTO/album';
 import { FavsService } from 'src/favs/favs.service';
+import { TrackService } from 'src/track/track.service';
 
 @Injectable()
 export class AlbumService {
   constructor(
     @Inject(forwardRef(() => FavsService))
     private readonly favService: FavsService,
+
+    private readonly trackSer: TrackService,
   ) {}
   getAll(): Album[] {
     return albums;
@@ -42,6 +45,7 @@ export class AlbumService {
     if (index === -1) throw new NotFoundException('Album not found');
     albums.splice(index, 1);
     this.favService.removeFavAlbum(id);
+    this.trackSer.removeCascadeAlb(id);
   }
   async update(id: string, albumsB: CreateAlbumDTO) {
     const albUpdate = await this.getById(id);

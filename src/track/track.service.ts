@@ -53,4 +53,13 @@ export class TrackService {
 
     return UpdTrack;
   }
+
+  removeCascadeAlb(id: string) {
+    for (let i = 0; i < track.length; i++)
+      if (track[i].albumId === id) track[i].albumId = null;
+  }
+  removeCascadeArt(id: string) {
+    for (let i = 0; i < track.length; i++)
+      if (track[i].artistId === id) track[i].artistId = null;
+  }
 }
