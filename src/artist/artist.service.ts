@@ -55,7 +55,7 @@ export class ArtistService {
     const art = await this.getById(id);
 
     if (body.name) art.name = body.name;
-    if (body.grammy) art.grammy = body.grammy;
+    if (body.grammy !== undefined) art.grammy = body.grammy;
 
     return art;
   }

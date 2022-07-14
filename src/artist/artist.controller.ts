@@ -21,7 +21,7 @@ export class ArtistController {
     return this.artistServise.getAll();
   }
   @Get(':id')
-  getById(@Param('id') id):Promise<Artist> {
+  getById(@Param('id') id): Promise<Artist> {
     return this.artistServise.getById(id);
   }
   @Put(':id')

@@ -30,8 +30,6 @@ export class UserService {
       updatedAt: new Date().valueOf(),
     };
     users.push(newUser);
-    // const ansUser = Object.assign({}, newUser);
-    // delete ansUser.password;
 
     return newUser;
   }
@@ -50,9 +48,6 @@ export class UserService {
     userUpd.password = user.newPassword;
     userUpd.updatedAt = new Date().valueOf();
     userUpd.version = userUpd.version + 1;
-
-    // const ansUser = Object.assign({}, userUpd);
-    // delete ansUser.password;
 
     return userUpd;
   }

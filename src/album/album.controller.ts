@@ -29,10 +29,7 @@ export class AlbumController {
     return this.albumservice.create(body);
   }
   @Put(':id')
-  update(
-    @Param('id') id,
-    @Body() body: CreateAlbumDTO,
-  ): Promise<Album> {
+  update(@Param('id') id, @Body() body: CreateAlbumDTO): Promise<Album> {
     return this.albumservice.update(id, body);
   }
   @Delete(':id')

@@ -1,4 +1,3 @@
-
 export class CreateFav {
   artists: string[];
   albums: string[];
