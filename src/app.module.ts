@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AlbumModule } from './album/album.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -7,6 +7,7 @@ import { ArtistModule } from './artist/artist.module';
 import { FavsModule } from './favs/favs.module';
 import { TrackModule } from './track/track.module';
 import { UserModule } from './user/user.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
 @Module({
   imports: [
@@ -16,6 +17,20 @@ import { UserModule } from './user/user.module';
     FavsModule,
     TrackModule,
     ConfigModule.forRoot(),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (config: ConfigService) => ({
+        type: config.get<'aurora-postgres'>('TYPE_DB'),
+        host: config.get<'string'>('HOST_DB'),
+        username: config.get<'string'>('USERNAME_DB'),
+        password: config.get<'string'>('PASSWORD_DB'),
+        port: config.get<'number'>('PORT_DB'),
+        entities: [__dirname + 'dist/**/*.entity{.ts,.js}'],
+        autoLoadEntities: true,
+        synchronize: true,
+      }),
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],

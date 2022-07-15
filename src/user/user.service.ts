@@ -9,46 +9,41 @@ import { CreateUserDTO } from './DTO/create-user-dto';
 import { UpdatePasswordDto } from './DTO/update-user-dto';
 import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
 import { FullUserDto } from './DTO/full-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { UserSchema } from 'src/entities/user.entity';
 
 @Injectable()
 export class UserService {
-  async getAll() {
-    return users;
+  constructor(
+    @InjectRepository(UserSchema)
+    private usersRepository: Repository<UserSchema>,
+  ) {}
+  async getAll(): Promise<FullUserDto[]> {
+    return await this.usersRepository.find();
   }
   async findbyId(id: string) {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
-    const user = await users.find((i) => i.id === id);
+    const user = await this.usersRepository.findOneBy({ id });
     if (!user) throw new NotFoundException('User not found');
     return user;
   }
   async create(user: CreateUserDTO): Promise<FullUserDto> {
-    const newUser = {
-      id: uuidv4(),
-      ...user,
-      version: 1,
-      createdAt: new Date().valueOf(),
-      updatedAt: new Date().valueOf(),
-    };
-    users.push(newUser);
+    const newUser = await this.usersRepository.insert(user);
 
-    return newUser;
+    return this.findbyId(newUser.identifiers[0].id);
   }
   async remove(id: string) {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
-    const index = await users.findIndex((item) => item.id === id);
-    if (index === -1) throw new NotFoundException('User not found');
-    users.splice(index, 1);
+    const index = await this.usersRepository.delete({ id });
+    if (!index.affected) throw new NotFoundException('User not found');
   }
   async update(id: string, user: UpdatePasswordDto) {
-    const userUpd = await this.findbyId(id);
-
-    if (user.oldPassword !== userUpd.password)
-      throw new ForbiddenException('old password is wrong');
-
-    userUpd.password = user.newPassword;
-    userUpd.updatedAt = new Date().valueOf();
-    userUpd.version = userUpd.version + 1;
-
-    return userUpd;
+    const updUser = await this.findbyId(id);
+    if (updUser.password === user.oldPassword) {
+      updUser.password = user.newPassword;
+      return await this.usersRepository.save({ id: id, ...updUser });
+    }
+    throw new ForbiddenException('old password is wrong');
   }
 }
