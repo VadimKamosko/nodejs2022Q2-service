@@ -4,10 +4,9 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { users } from 'src/memoryBd/bd';
 import { CreateUserDTO } from './DTO/create-user-dto';
 import { UpdatePasswordDto } from './DTO/update-user-dto';
-import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
+import { validate as uuidValidate } from 'uuid';
 import { FullUserDto } from './DTO/full-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';

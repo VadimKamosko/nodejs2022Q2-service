@@ -17,7 +17,7 @@ import { Artist } from './DTO/full-arist-dto';
 export class ArtistController {
   constructor(private readonly artistServise: ArtistService) {}
   @Get()
-  getAll() {
+  getAll():Promise<Artist[]> {
     return this.artistServise.getAll();
   }
   @Get(':id')
