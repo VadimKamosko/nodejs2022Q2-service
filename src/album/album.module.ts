@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { ArtistService } from 'src/artist/artist.service';
-import { FavsService } from 'src/favs/favs.service';
-import { TrackService } from 'src/track/track.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AlbumSchema } from 'src/entities/album-entity';
 import { AlbumController } from './album.controller';
 import { AlbumService } from './album.service';
 
 @Module({
+  imports: [TypeOrmModule.forFeature([AlbumSchema])],
   controllers: [AlbumController],
-  providers: [TrackService, FavsService, AlbumService, ArtistService],
+  providers: [AlbumService],
 })
 export class AlbumModule {}

@@ -17,7 +17,7 @@ import { CreateAlbumDTO } from './DTO/create-album-dto';
 export class AlbumController {
   constructor(private readonly albumservice: AlbumService) {}
   @Get()
-  getall(): CreateAlbumDTO[] {
+  getall(): Promise<Album[]> {
     return this.albumservice.getAll();
   }
   @Get(':id')
@@ -25,7 +25,7 @@ export class AlbumController {
     return this.albumservice.getById(id);
   }
   @Post()
-  create(@Body() body: CreateAlbumDTO): Album {
+  create(@Body() body: CreateAlbumDTO): Promise<Album> {
     return this.albumservice.create(body);
   }
   @Put(':id')

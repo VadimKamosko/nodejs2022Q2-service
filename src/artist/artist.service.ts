@@ -5,13 +5,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { artists } from 'src/memoryBd/bd';
 import { CreateArtistDTO } from './DTO/create-artist-dto';
 import { Artist } from './DTO/full-arist-dto';
-import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
-import { FavsService } from 'src/favs/favs.service';
-import { TrackService } from 'src/track/track.service';
-import { AlbumService } from 'src/album/album.service';
+import { validate as uuidValidate } from 'uuid';
+
 import { InjectRepository } from '@nestjs/typeorm';
 import { ArtistSchema } from 'src/entities/artist-entity';
 import { Repository } from 'typeorm';
@@ -21,13 +18,6 @@ export class ArtistService {
   constructor(
     @InjectRepository(ArtistSchema)
     private artRep: Repository<ArtistSchema>,
-
-    @Inject(forwardRef(() => FavsService))
-    private readonly favService: FavsService,
-
-    private readonly trackSer: TrackService,
-
-    private readonly albServ: AlbumService,
   ) {}
 
   async getAll(): Promise<Artist[]> {
@@ -55,6 +45,15 @@ export class ArtistService {
   async update(id: string, body: CreateArtistDTO): Promise<Artist> {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
 
-    return this.artRep.save({ id: id, ...body });
+    const result = await this.artRep
+      .createQueryBuilder()
+      .update({ ...body })
+      .where({ id })
+      .returning('*')
+      .execute();
+
+    if (result.affected) return result.raw[0];
+
+    throw new NotFoundException();
   }
 }

@@ -17,14 +17,10 @@ import { albums, track, artists } from 'src/memoryBd/bd';
 
 @Injectable()
 export class FavsService {
-  constructor(
-    @Inject(forwardRef(() => AlbumService))
-    private readonly albSer: AlbumService,
-    @Inject(forwardRef(() => TrackService))
-    private readonly trackSer: TrackService,
-    @Inject(forwardRef(() => ArtistService))
-    private readonly artSer: ArtistService,
-  ) {}
+  private readonly albSer: AlbumService;
+  private readonly trackSer: TrackService;
+  private readonly artSer: ArtistService;
+  constructor() {}
 
   async getAll(): Promise<Fav> {
     const allfavTrack = await Promise.all(

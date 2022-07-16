@@ -8,6 +8,6 @@ export class AlbumSchema {
   name: string;
   @Column()
   year: number;
-  @Column()
+  @Column({ nullable: true })
   artistId: string;
 }
