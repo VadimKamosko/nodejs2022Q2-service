@@ -41,7 +41,7 @@ export class TrackService {
     const index = await track.findIndex((item) => item.id === id);
     if (index === -1) throw new NotFoundException('Track not found');
     track.splice(index, 1);
-    await this.favService.removeFavTrack(id);
+    await this.favService.removeFavTrack(id, false);
   }
   async update(id: string, trackB: TrackcCreateDTO): Promise<Track> {
     const UpdTrack = await this.getById(id);

@@ -3,6 +3,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { AlbumService } from 'src/album/album.service';
@@ -47,8 +48,10 @@ export class FavsService {
 
     return ansTrack;
   }
-  async removeFavTrack(id: string) {
-    const indx = favs.tracks.findIndex((i) => i == id);
+  async removeFavTrack(id: string, isDirectly = true) {
+    if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
+    const indx = await favs.tracks.findIndex((i) => i == id);
+    if (indx === -1 && isDirectly) throw new NotFoundException();
     if (indx !== -1) await favs.tracks.splice(indx, 1);
   }
 
@@ -60,8 +63,10 @@ export class FavsService {
     favs.albums.push(id);
     return alb;
   }
-  async removeFavAlbum(id: string) {
-    const indx = favs.albums.findIndex((i) => i == id);
+  async removeFavAlbum(id: string, isDirectly = true) {
+    if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
+    const indx = await favs.albums.findIndex((i) => i == id);
+    if (indx === -1 && isDirectly) throw new NotFoundException();
     if (indx !== -1) await favs.albums.splice(indx, 1);
   }
 
@@ -73,8 +78,10 @@ export class FavsService {
     favs.artists.push(id);
     return art;
   }
-  async removeFavArtist(id: string) {
-    const indx = favs.artists.findIndex((i) => i == id);
+  async removeFavArtist(id: string, isDirectly = true) {
+    if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
+    const indx = await favs.artists.findIndex((i) => i == id);
+    if (indx === -1 && isDirectly) throw new NotFoundException();
     if (indx !== -1) await favs.artists.splice(indx, 1);
   }
 }

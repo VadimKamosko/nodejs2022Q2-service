@@ -47,7 +47,7 @@ export class ArtistService {
     const index = await artists.findIndex((item) => item.id === id);
     if (index === -1) throw new NotFoundException('Artist not found');
     artists.splice(index, 1);
-    this.favService.removeFavArtist(id);
+    this.favService.removeFavArtist(id, false);
     this.trackSer.removeCascadeArt(id);
     this.albServ.removeArtCascade(id);
   }

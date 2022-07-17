@@ -44,8 +44,8 @@ export class AlbumService {
     const index = await albums.findIndex((item) => item.id === id);
     if (index === -1) throw new NotFoundException('Album not found');
     albums.splice(index, 1);
-    this.favService.removeFavAlbum(id);
-    this.trackSer.removeCascadeAlb(id);
+    await this.favService.removeFavAlbum(id, false);
+    await this.trackSer.removeCascadeAlb(id);
   }
   async update(id: string, albumsB: CreateAlbumDTO) {
     const albUpdate = await this.getById(id);
