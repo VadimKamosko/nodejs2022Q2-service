@@ -1,65 +1,70 @@
 import {
   BadRequestException,
-  forwardRef,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { Track } from './DTO/Track';
-import { track } from 'src/memoryBd/bd';
 import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
 import { TrackcCreateDTO } from './DTO/create-track-dto';
-import { FavsService } from 'src/favs/favs.service';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { TrackSchema } from 'src/entities/track-entity';
 
 @Injectable()
 export class TrackService {
   constructor(
     // @Inject(forwardRef(() => FavsService))
     // private readonly favService: FavsService,
+    @InjectRepository(TrackSchema)
+    private TrackRep: Repository<TrackSchema>,
   ) {}
-  getAll(): Track[] {
-    return track;
+  async getAll(): Promise<Track[]> {
+    return await this.TrackRep.find();
   }
   async getById(id: string): Promise<Track> {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
-    const trackFind = await track.find((i) => i.id === id);
+    const trackFind = await this.TrackRep.findOneBy({ id });
     if (!trackFind) throw new NotFoundException('Track not found');
+
     return trackFind;
   }
-  create(trackB: TrackcCreateDTO): Track {
-    // if (!trackB.albumId) trackB.albumId = null;
-    // else if (!albSer.getById(trackB.albumId)) throw new BadRequestException();
-    // if (!artSer.getById(trackB.artistId)) throw new BadRequestException();
-    track.push({
-      id: uuidv4(),
+  async create(trackB: TrackcCreateDTO): Promise<Track> {
+    const newtrack = await this.TrackRep.insert({
       ...trackB,
     });
-    return track[track.length - 1];
+    return await this.getById(newtrack.identifiers[0].id);
   }
   async remove(id: string) {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
-    const index = await track.findIndex((item) => item.id === id);
-    if (index === -1) throw new NotFoundException('Track not found');
-    track.splice(index, 1);
+    const index = await this.TrackRep.delete({ id });
+    if (!index.affected) throw new NotFoundException('Track not found');
     // await this.favService.removeFavTrack(id);
   }
   async update(id: string, trackB: TrackcCreateDTO): Promise<Track> {
-    const UpdTrack = await this.getById(id);
+    if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
 
-    if (trackB.name) UpdTrack.name = trackB.name;
-    if (trackB.artistId) UpdTrack.artistId = trackB.artistId;
-    if (trackB.albumId) UpdTrack.albumId = trackB.albumId;
-    if (trackB.duration) UpdTrack.duration = trackB.duration;
+    const result = await this.TrackRep.createQueryBuilder()
+      .update({ ...trackB })
+      .where({ id })
+      .returning('*')
+      .execute();
 
-    return UpdTrack;
+    if (result.affected) return result.raw[0];
+
+    throw new NotFoundException();
   }
 
-  removeCascadeAlb(id: string) {
-    for (let i = 0; i < track.length; i++)
-      if (track[i].albumId === id) track[i].albumId = null;
-  }
-  removeCascadeArt(id: string) {
-    for (let i = 0; i < track.length; i++)
-      if (track[i].artistId === id) track[i].artistId = null;
-  }
+  // async removeCascadeAlb(id: string) {
+  //   console.log("dd");
+
+  //   await this.TrackRep.createQueryBuilder()
+  //     .update({ artistId: null })
+  //     .where({ artistId: id })
+  //     .returning('*')
+  //     .execute();
+  // }
+  // removeCascadeArt(id: string) {
+  //   for (let i = 0; i < track.length; i++)
+  //     if (track[i].artistId === id) track[i].artistId = null;
+  // }
 }

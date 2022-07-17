@@ -9,6 +9,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
+import { TrackSchema } from 'src/entities/track-entity';
 import { TrackcCreateDTO } from './DTO/create-track-dto';
 import { Track } from './DTO/Track';
 
@@ -18,7 +19,7 @@ import { TrackService } from './track.service';
 export class TrackController {
   constructor(private readonly trackservice: TrackService) {}
   @Get()
-  findAll(): Track[] {
+  findAll(): Promise<Track[]> {
     return this.trackservice.getAll();
   }
   @Get(':id')
@@ -26,7 +27,7 @@ export class TrackController {
     return this.trackservice.getById(id);
   }
   @Post()
-  create(@Body() track: TrackcCreateDTO): Track {
+  create(@Body() track: TrackcCreateDTO): Promise<Track> {
     return this.trackservice.create(track);
   }
   @Put(':id')

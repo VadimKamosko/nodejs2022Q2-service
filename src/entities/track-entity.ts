@@ -1,15 +1,40 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { AlbumSchema } from './album-entity';
+import { ArtistSchema } from './artist-entity';
 
 @Entity('tracks')
-export class trackSchema {
+export class TrackSchema {
   @PrimaryGeneratedColumn('uuid')
   id: string;
   @Column()
   name: string;
-  @Column()
-  artistId: string | null;
-  @Column()
-  albumId: string | null;
+
+  @ManyToOne(() => ArtistSchema, (artist) => artist.id, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    cascade: ['insert', 'update', 'remove'],
+  })
+  artist: string;
+
+  @Column({ nullable: true })
+  artistId: string;
+
+  @ManyToOne(() => AlbumSchema, (album) => album.id, {
+    nullable: true,
+    onDelete: 'SET NULL',
+    cascade: ['insert', 'update', 'remove'],
+  })
+  album: string;
+
+  @Column({ nullable: true })
+  albumId: string;
   @Column()
   duration: number;
 }
