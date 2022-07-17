@@ -36,12 +36,14 @@ export class FavsService {
     @InjectRepository(ArtistSchema)
     private artR: Repository<ArtistSchema>,
   ) {
-    favRep.insert({
-      id: '05261413-9309-45ec-9ce1-9a2e811f3083',
-      artists: [],
-      albums: [],
-      tracks: [],
-    });
+    favRep.delete({ id: '05261413-9309-45ec-9ce1-9a2e811f3083' }).then((res) =>
+      favRep.insert({
+        id: '05261413-9309-45ec-9ce1-9a2e811f3083',
+        artists: [],
+        albums: [],
+        tracks: [],
+      }),
+    );
   }
 
   async getAll(): Promise<Fav> {
@@ -84,8 +86,14 @@ export class FavsService {
     return track;
   }
   async removeFavTrack(id: string) {
-    const indx = favs.tracks.findIndex((i) => i == id);
-    if (indx !== -1) await favs.tracks.splice(indx, 1);
+    await this.favRep
+      .createQueryBuilder()
+      .update()
+      .set({
+        tracks: () => `array_remove("tracks", '${id}')`,
+      })
+      .where('id = :id', { id: '05261413-9309-45ec-9ce1-9a2e811f3083' })
+      .execute();
   }
 
   async addfavAlbum(id: string): Promise<Album> {
@@ -103,13 +111,19 @@ export class FavsService {
     return album;
   }
   async removeFavAlbum(id: string) {
-    const indx = favs.albums.findIndex((i) => i == id);
-    if (indx !== -1) await favs.albums.splice(indx, 1);
+    await this.favRep
+      .createQueryBuilder()
+      .update()
+      .set({
+        albums: () => `array_remove("albums", '${id}')`,
+      })
+      .where('id = :id', { id: '05261413-9309-45ec-9ce1-9a2e811f3083' })
+      .execute();
   }
 
   async addfavArtist(id: string): Promise<Artist> {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
-    const artist = await this.artR.findOneBy({ id });    
+    const artist = await this.artR.findOneBy({ id });
     if (!artist) throw new UnprocessableEntityException();
     await this.favRep
       .createQueryBuilder()
@@ -122,7 +136,13 @@ export class FavsService {
     return artist;
   }
   async removeFavArtist(id: string) {
-    const indx = favs.artists.findIndex((i) => i == id);
-    if (indx !== -1) await favs.artists.splice(indx, 1);
+    await this.favRep
+      .createQueryBuilder()
+      .update()
+      .set({
+        artists: () => `array_remove("artists", '${id}')`,
+      })
+      .where('id = :id', { id: '05261413-9309-45ec-9ce1-9a2e811f3083' })
+      .execute();
   }
 }
