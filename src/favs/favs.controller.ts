@@ -9,6 +9,7 @@ import {
 } from '@nestjs/common';
 import { Album } from 'src/album/DTO/album';
 import { Artist } from 'src/artist/DTO/full-arist-dto';
+import { FavSchema } from 'src/entities/fav.entity';
 import { Track } from 'src/track/DTO/Track';
 import { Fav } from './DTO/create-favs-dto';
 import { FavsService } from './favs.service';
