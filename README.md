@@ -2,6 +2,8 @@
 
 ## Containerization
 
+Don't forget to change the parameters in .env file
+
 ```
 docker compose up
 ```
