@@ -1,7 +1,5 @@
 import {
   BadRequestException,
-  forwardRef,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -42,10 +40,6 @@ export class ArtistService {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
     const index = await this.artRep.delete({ id });
     if (!index.affected) throw new NotFoundException('Artist not found');
-    
-    // this.favService.removeFavArtist(id);
-    // this.trackSer.removeCascadeArt(id);
-    // this.albServ.removeArtCascade(id);
   }
   async update(id: string, body: CreateArtistDTO): Promise<Artist> {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');

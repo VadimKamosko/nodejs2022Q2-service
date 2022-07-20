@@ -4,7 +4,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateAlbumDTO } from './DTO/create-album-dto';
-import { v4 as uuidv4, validate as uuidValidate } from 'uuid';
+import { validate as uuidValidate } from 'uuid';
 import { Album } from './DTO/album';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AlbumSchema } from 'src/entities/album-entity';

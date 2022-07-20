@@ -9,10 +9,10 @@ import {
 
 @Entity('users')
 export class UserSchema {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ unique: true })
   login: string;
 
   @Column()

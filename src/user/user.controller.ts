@@ -11,7 +11,6 @@ import {
   Put,
   UseInterceptors,
 } from '@nestjs/common';
-import { UserSchema } from 'src/entities/user.entity';
 import { CreateUserDTO } from './DTO/create-user-dto';
 import { FullUserDto } from './DTO/full-user.dto';
 import { UpdatePasswordDto } from './DTO/update-user-dto';
