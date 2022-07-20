@@ -13,7 +13,7 @@ import {
 } from '@nestjs/common';
 import { CreateUserDTO } from './DTO/create-user-dto';
 import { FullUserDto } from './DTO/full-user.dto';
-import { UpdatePasswordDto } from './DTO/update-user-dto';
+import { UpdateUserDto } from './DTO/update-user-dto';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -40,7 +40,7 @@ export class UserController {
   @UseInterceptors(ClassSerializerInterceptor)
   @Put(':id')
   async updateUser(
-    @Body() body: UpdatePasswordDto,
+    @Body() body: UpdateUserDto,
     @Param('id') id,
   ): Promise<FullUserDto> {
     return new FullUserDto(await this.userService.update(id, body));

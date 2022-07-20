@@ -26,4 +26,7 @@ export class UserSchema {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({ nullable: true })
+  hashToken: string;
 }

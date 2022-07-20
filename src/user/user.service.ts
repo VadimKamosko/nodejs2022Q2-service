@@ -5,12 +5,13 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDTO } from './DTO/create-user-dto';
-import { UpdatePasswordDto } from './DTO/update-user-dto';
+import { UpdateUserDto } from './DTO/update-user-dto';
 import { validate as uuidValidate } from 'uuid';
 import { FullUserDto } from './DTO/full-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserSchema } from 'src/entities/user.entity';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -28,6 +29,8 @@ export class UserService {
     return user;
   }
   async create(user: CreateUserDTO): Promise<FullUserDto> {
+    user.password = await this.hashPass(user.password);
+
     const newUser = await this.usersRepository.insert(user);
 
     return this.findbyId(newUser.identifiers[0].id);
@@ -37,12 +40,16 @@ export class UserService {
     const index = await this.usersRepository.delete({ id });
     if (!index.affected) throw new NotFoundException('User not found');
   }
-  async update(id: string, user: UpdatePasswordDto) {
+  async update(id: string, user: UpdateUserDto) {
     const updUser = await this.findbyId(id);
-    if (updUser.password === user.oldPassword) {
-      updUser.password = user.newPassword;
+    if (bcrypt.compare(user.oldPassword, updUser.password)) {
+      updUser.password = await this.hashPass(user.newPassword);
       return await this.usersRepository.save({ id: id, ...updUser });
     }
     throw new ForbiddenException('old password is wrong');
+  }
+
+  hashPass(password: string) {
+    return bcrypt.hash(password, 10);
   }
 }
