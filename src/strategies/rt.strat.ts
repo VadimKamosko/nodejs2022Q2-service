@@ -4,7 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 
 @Injectable()
-export class RtStrategies extends PassportStrategy(Strategy, 'JWT') {
+export class RtStrategies extends PassportStrategy(Strategy, 'JWT-refresh') {
   constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -14,8 +14,8 @@ export class RtStrategies extends PassportStrategy(Strategy, 'JWT') {
     });
   }
   async validate(req: Request, payload: any) {
-    const authHead = req.get('authorization') || req.get('Authorization');
-    const refToken = authHead.replace('Bearer', '').trim();
-    return { ...payload, refToken };
+    // const authHead = req.get('authorization') || req.get('Authorization');
+    // const refToken = authHead.replace('Bearer', '').trim();
+    return { ...payload, rt: req.body.refreshToken };
   }
 }

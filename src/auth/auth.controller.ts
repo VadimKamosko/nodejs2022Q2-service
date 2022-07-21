@@ -1,7 +1,9 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDTO } from 'src/user/DTO/create-user-dto';
 import { AuthService } from './auth.service';
 import { Tokens } from './DTO/token-dto';
+import { Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -17,8 +19,10 @@ export class AuthController {
     return this.authService.login(body);
   }
 
+  @UseGuards(AuthGuard('JWT-refresh'))
   @Post('/refresh')
-  refToken(@Body('refreshToken') token: string) {
-    this.authService.refreshToken(token);
+  refToken(@Req() req: Request) {
+    const user = req.user['sub'];
+    return this.authService.refreshToken(user, req.user['rt']);
   }
 }
