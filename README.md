@@ -1,13 +1,5 @@
 # Home Library Service
 
-## Containerization
-
-Don't forget to change the parameters in .env file
-
-```
-docker compose up
-```
-
 ## Prerequisites
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
@@ -23,6 +15,13 @@ git clone {repository URL}
 
 ```
 npm install
+```
+## Containerization
+
+Don't forget to change the parameters in .env file
+
+```
+docker compose up
 ```
 
 ## Running application

@@ -2,12 +2,18 @@ version: '3.8'
 
 services:
   prod:
+    # image: nodejs2022q2-service
     env_file:
       - .env
     container_name: nodejs2022Q2-service
     build:
       context: .
       dockerfile: ./Dockerfile
+      target: development
+    command: npm run start:dev
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
       - ${PORT}:${PORT}
       - 9229:9229
@@ -15,7 +21,7 @@ services:
       - nesjs-network
     restart: unless-stopped
     environment:
-      HOST_DB: postgres
+      TYPEORM_HOST: postgres
 
   postgres:
     env_file:
@@ -27,16 +33,14 @@ services:
     networks:
       - nesjs-network
     environment:
-      POSTGRES_PASSWORD: ${PASSWORD_DB}
-      POSTGRES_USER: ${USERNAME_DB}
-      POSTGRES_DB: ${DATABASE_NAME_DB}
+      POSTGRES_PASSWORD: ${TYPEORM_PASSWORD}
+      POSTGRES_USER: ${TYPEORM_USERNAME}
+      POSTGRES_DB: ${TYPEORM_DATABASE}
       PG_DATA: /var/lib/postgresql/data
     ports:
-      - ${PORT_DB}:${PORT_DB}
+      - ${TYPEORM_PORT}:${TYPEORM_PORT}
     volumes:
-      - pgdata:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/data
 
 networks:
   nesjs-network:
-volumes:
-  pgdata:

@@ -18,7 +18,12 @@
     "test:auth": "cross-env TEST_MODE=auth jest --config ./test/jest-e2e.json",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
-    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand"
+    "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "typeorm:migration":"node ./node_modules/typeorm/cli migration:run -d ormconfig.ts",
+    "typeorm:generate":"node ./node_modules/typeorm/cli migration:generate -n newTables -d migration",
+    "typeorm:create":"node ./node_modules/typeorm/cli migration:create ./src/migration/post",
+    "scan":"docker scan nodejs2022q2-service_prod"
+
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",

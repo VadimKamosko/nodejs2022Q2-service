@@ -15,27 +15,27 @@ import { Artist } from './DTO/full-arist-dto';
 
 @Controller('artist')
 export class ArtistController {
-  constructor(private readonly artistServise: ArtistService) {}
+  constructor(private readonly artistService: ArtistService) {}
   @Get()
   getAll():Promise<Artist[]> {
-    return this.artistServise.getAll();
+    return this.artistService.getAll();
   }
   @Get(':id')
   getById(@Param('id') id): Promise<Artist> {
-    return this.artistServise.getById(id);
+    return this.artistService.getById(id);
   }
   @Put(':id')
   update(@Param('id') id, @Body() body: CreateArtistDTO) {
-    return this.artistServise.update(id, body);
+    return this.artistService.update(id, body);
   }
   @Post()
   @HttpCode(HttpStatus.CREATED)
   create(@Body() body: CreateArtistDTO) {
-    return this.artistServise.create(body);
+    return this.artistService.create(body);
   }
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
   async renove(@Param('id') id) {
-    await this.artistServise.remove(id);
+    await this.artistService.remove(id);
   }
 }
