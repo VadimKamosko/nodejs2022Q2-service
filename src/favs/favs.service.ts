@@ -28,13 +28,13 @@ export class FavsService {
 
     private dataSource: DataSource,
   ) {
-    favRep
-      .delete({ idUser: '05261413-9309-45ec-9ce1-9a2e811f3083' })
-      .then((res) =>
-        favRep.insert({
-          idUser: '05261413-9309-45ec-9ce1-9a2e811f3083',
-        }),
-      );
+    // favRep
+    //   .delete({ idUser: '05261413-9309-45ec-9ce1-9a2e811f3083' })
+    //   .then((res) =>
+    //     favRep.insert({
+    //       idUser: '05261413-9309-45ec-9ce1-9a2e811f3083',
+    //     }),
+    //   );
   }
 
   async getAll(): Promise<Fav> {

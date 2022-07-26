@@ -8,7 +8,7 @@ import { FavsModule } from './favs/favs.module';
 import { TrackModule } from './track/track.module';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import datasource from 'ormconfig';
+import { configAsync } from 'typeconfig';
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import datasource from 'ormconfig';
     FavsModule,
     TrackModule,
     ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({ ...datasource.options, autoLoadEntities: true }),
+    TypeOrmModule.forRootAsync(configAsync),
   ],
   controllers: [AppController],
   providers: [AppService],
