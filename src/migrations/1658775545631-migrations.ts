@@ -27,7 +27,7 @@ export class migrations1658775545631 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "fav_use_alb" ADD CONSTRAINT "FK_6bdb9ea426521940f039d6f3c42" FOREIGN KEY ("alb_id") REFERENCES "albums"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "fav_use_track" ADD CONSTRAINT "FK_736e995feec8e16d799d5f2102b" FOREIGN KEY ("fav_id") REFERENCES "favs"("idUser") ON DELETE CASCADE ON UPDATE CASCADE`);
         await queryRunner.query(`ALTER TABLE "fav_use_track" ADD CONSTRAINT "FK_7cbf40c7c5072b39c4452cd22f2" FOREIGN KEY ("track_id") REFERENCES "tracks"("id") ON DELETE CASCADE ON UPDATE CASCADE`);
-        await queryRunner.query(`INSERT INTO "favs"("idUser") VALUES ("05261413-9309-45ec-9ce1-9a2e811f3083")`);
+        await queryRunner.query(`INSERT INTO "favs"("idUser") VALUES ('05261413-9309-45ec-9ce1-9a2e811f3083')`);
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
