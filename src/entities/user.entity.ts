@@ -12,7 +12,7 @@ export class UserSchema {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ unique: true })
+  @Column()
   login: string;
 
   @Column()

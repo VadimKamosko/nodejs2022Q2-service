@@ -1,21 +1,22 @@
-import { Controller, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateUserDTO } from 'src/user/DTO/create-user-dto';
 import { AuthService } from './auth.service';
 import { Tokens } from './DTO/token-dto';
 import { Request } from 'express';
+import { FullUserDto } from 'src/user/DTO/full-user.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/signup')
-  sihnup(@Param() body: CreateUserDTO): Promise<Tokens> {
+  sihnup(@Body() body: CreateUserDTO): Promise<FullUserDto> {
     return this.authService.signup(body);
   }
 
   @Post('/login')
-  login(@Param() body: CreateUserDTO): Promise<Tokens> {
+  login(@Body() body: CreateUserDTO): Promise<Tokens> {
     return this.authService.login(body);
   }
 

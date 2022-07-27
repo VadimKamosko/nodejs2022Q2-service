@@ -42,7 +42,8 @@ export class UserService {
   }
   async update(id: string, user: UpdateUserDto) {
     const updUser = await this.findbyId(id);
-    if (bcrypt.compare(user.oldPassword, updUser.password)) {
+    const isEq = await bcrypt.compare(user.oldPassword, updUser.password);
+    if (isEq) {
       updUser.password = await this.hashPass(user.newPassword);
       return await this.usersRepository.save({ id: id, ...updUser });
     }

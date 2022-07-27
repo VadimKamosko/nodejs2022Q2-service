@@ -10,6 +10,7 @@ import { CreateUserDTO } from 'src/user/DTO/create-user-dto';
 import { IsNull, Not, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from './DTO/token-dto';
+import { FullUserDto } from 'src/user/DTO/full-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -32,22 +33,23 @@ export class AuthService {
 
     const tokens = await this.getTokens(user.id, AuthUser.login);
 
-    await this.updateRtToken(user.id, tokens.refresh_token);
+    await this.updateRtToken(user.id, tokens.refreshToken);
     return tokens;
   }
 
-  async signup(AuthUser: CreateUserDTO): Promise<Tokens> {
+  async signup(AuthUser: CreateUserDTO): Promise<FullUserDto> {
     AuthUser.password = await this.hashData(AuthUser.password);
 
     const newUser = await this.usersRepository.insert(AuthUser);
 
-    const tokens = await this.getTokens(
-      newUser.identifiers[0].id,
-      AuthUser.login,
-    );
+    const id = newUser.identifiers[0].id;
 
-    await this.updateRtToken(newUser.identifiers[0].id, tokens.refresh_token);
-    return tokens;
+    const tokens = await this.getTokens(id, AuthUser.login);
+
+    await this.updateRtToken(id, tokens.refreshToken);
+
+    const user = await this.usersRepository.findOneBy({ id });
+    return user;
   }
 
   async refreshToken(id: string, rt: string) {
@@ -61,7 +63,7 @@ export class AuthService {
 
     const tokens = await this.getTokens(user.id, user.login);
 
-    await this.updateRtToken(user.id, tokens.refresh_token);
+    await this.updateRtToken(user.id, tokens.refreshToken);
     return tokens;
   }
 
@@ -71,11 +73,11 @@ export class AuthService {
     await this.usersRepository
       .createQueryBuilder()
       .update({ hashToken: hash })
-      .where({ userId: userId });
+      .where({ id: userId });
   }
 
   async getTokens(userId: string, login: string) {
-    const [access_token, refresh_token] = await Promise.all([
+    const [accessToken, refreshToken] = await Promise.all([
       this.JwtService.signAsync(
         {
           sub: userId,
@@ -98,8 +100,8 @@ export class AuthService {
       ),
     ]);
     return {
-      access_token,
-      refresh_token,
+      accessToken,
+      refreshToken,
     };
   }
   hashData(password: string) {
