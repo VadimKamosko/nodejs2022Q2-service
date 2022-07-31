@@ -31,7 +31,7 @@ import { AuthModule } from './auth/auth.module';
         database:config.get<'string'>('DATABASE_NAME_DB'),
         autoLoadEntities: true,
         synchronize: true,
-        logging: true,
+        // logging: true,
       }),
     }),
     AuthModule,

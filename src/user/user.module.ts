@@ -1,6 +1,7 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserSchema } from 'src/entities/user.entity';
+import { MyLogger } from 'src/utils/logger.middleware';
 import { UserController } from './user.controller';
 import { UserService } from './user.service';
 
@@ -9,4 +10,8 @@ import { UserService } from './user.service';
   providers: [UserService],
   controllers: [UserController],
 })
-export class UserModule {}
+export class UserModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(MyLogger).forRoutes('*');
+  }
+}
