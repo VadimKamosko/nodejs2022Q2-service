@@ -10,18 +10,28 @@
 ```
 git clone {repository URL}
 ```
+```
+git checkout devdb
+```
+## Containerization
+
+images are taken from docker hub
+
+```
+docker compose up
+```
 
 ## Installing NPM modules
 
 ```
 npm install
 ```
-
 ## Running application
 
 ```
 npm start
 ```
+You have to change the .env to connect to your database
 
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.

@@ -1,0 +1,4 @@
+# Dockerfile
+FROM postgres:12.11-alpine3.16
+
+RUN mkdir -p /tmp/psql_data/
