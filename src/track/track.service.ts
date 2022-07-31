@@ -13,8 +13,6 @@ import { TrackSchema } from 'src/entities/track-entity';
 @Injectable()
 export class TrackService {
   constructor(
-    // @Inject(forwardRef(() => FavsService))
-    // private readonly favService: FavsService,
     @InjectRepository(TrackSchema)
     private TrackRep: Repository<TrackSchema>,
   ) {}
