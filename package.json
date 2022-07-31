@@ -22,7 +22,7 @@
     "typeorm:migration":"npx typeorm-ts-node-commonjs migration:run -d ormconfig.ts",
     "typeorm:generate":"npx typeorm-ts-node-commonjs migration:generate ./src/migrations/migrations -d ormconfig.ts",
     "typeorm:create":"npx typeorm-ts-node-commonjs migration:create ./src/migrations/init",
-    "scan":"docker scan nodejs2022q2-service_prod"
+    "scan":"docker scan kamoskovs/nodejs2022q2-service_prod"
 
   },
   "dependencies": {

@@ -10,20 +10,22 @@
 ```
 git clone {repository URL}
 ```
+```
+git checkout devdb
+```
+## Containerization
+
+images are taken from docker hub
+
+```
+docker compose up
+```
 
 ## Installing NPM modules
 
 ```
 npm install
 ```
-## Containerization
-
-Don't forget to change the parameters in .env file
-
-```
-docker compose up
-```
-
 ## Running application
 
 ```
