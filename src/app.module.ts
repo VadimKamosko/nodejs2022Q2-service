@@ -4,7 +4,7 @@ import {
   NestModule,
   RequestMethod,
 } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule} from '@nestjs/config';
 import { AlbumModule } from './album/album.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,6 +17,7 @@ import { AuthModule } from './auth/auth.module';
 import { MyLogger } from './utils/logger.middleware';
 import { RtStrategies } from './strategies/rt.strat';
 import { AtStrategies } from './strategies/at.strat';
+import { configAsync } from 'typeconfig';
 
 @Module({
   imports: [
@@ -26,22 +27,7 @@ import { AtStrategies } from './strategies/at.strat';
     FavsModule,
     TrackModule,
     ConfigModule.forRoot(),
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: async (config: ConfigService) => ({
-        type: config.get<'aurora-postgres'>('TYPE_DB'),
-        host: config.get<'string'>('HOST_DB'),
-        username: config.get<'string'>('USERNAME_DB'),
-        password: config.get<'string'>('PASSWORD_DB'),
-        port: config.get<'number'>('PORT_DB'),
-        entities: [__dirname + 'dist/**/*.entity{.ts,.js}'],
-        database: config.get<'string'>('DATABASE_NAME_DB'),
-        autoLoadEntities: true,
-        synchronize: true,
-        // logging: true,
-      }),
-    }),
+    TypeOrmModule.forRootAsync(configAsync),
     AuthModule,
   ],
   controllers: [AppController],
