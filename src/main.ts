@@ -6,11 +6,12 @@ import { dirname, join } from 'path';
 import { parse } from 'yaml';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './utils/http-exception.filter';
+import { InternalServerErrorFilter } from './utils/InternalServerErrorFilter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
-  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalFilters(new InternalServerErrorFilter(),new HttpExceptionFilter());
 
   const rootDirname = dirname(__dirname);
   const DOC_API = await readFile(join(rootDirname, 'doc', 'api.yaml'), 'utf-8');

@@ -52,12 +52,13 @@ export class AppModule implements NestModule {
     consumer
       .apply(MyLogger)
       .forRoutes(
-        { path: 'user', method: RequestMethod.ALL },
-        { path: 'track', method: RequestMethod.ALL },
+        { path: 'user/*', method: RequestMethod.ALL },
+        { path: 'track/*', method: RequestMethod.ALL },
         { path: '/favs/*', method: RequestMethod.ALL },
-        { path: 'album', method: RequestMethod.ALL },
-        { path: 'artist', method: RequestMethod.ALL },
+        { path: 'album/*', method: RequestMethod.ALL },
+        { path: 'artist/*', method: RequestMethod.ALL },
         { path: '/auth/*', method: RequestMethod.ALL },
+        { path: '/', method: RequestMethod.ALL },
       );
   }
 }

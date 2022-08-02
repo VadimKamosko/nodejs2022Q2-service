@@ -10,7 +10,7 @@ export class MyLogger implements NestMiddleware {
   }
   private logger = new Logger('HTTP');
   private writeableStream = createWriteStream('./logs/log.txt', {
-    flags: 'w',
+    flags: 'a',
   });
   private readable = new Stream.Readable({ read() {} });
   use(req: Request, res: Response, next: NextFunction) {
@@ -20,7 +20,7 @@ export class MyLogger implements NestMiddleware {
       const answer = `Url:${originalUrl}, body:${JSON.stringify(
         body,
       )} Query:${JSON.stringify(query)}, Status:${code}`;
-
+      
       if (!code.toString().startsWith('2')) this.ErrorLogging(answer);
 
       this.logger.log(answer);
