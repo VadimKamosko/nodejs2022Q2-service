@@ -27,23 +27,16 @@ export class FavsService {
     private artR: Repository<ArtistSchema>,
 
     private dataSource: DataSource,
-  ) {
-    favRep
-      .delete({ idUser: '05261413-9309-45ec-9ce1-9a2e811f3083' })
-      .then((res) =>
-        favRep.insert({
-          idUser: '05261413-9309-45ec-9ce1-9a2e811f3083',
-        }),
-      );
-  }
+  ) {}
 
-  async getAll(): Promise<Fav> {
+  async getAll(userId: string): Promise<Fav> {
     const [fav] = await this.favRep.find({
+      where: { idUser: userId },
       relations: ['artists', 'tracks', 'albums'],
     });
     return { albums: fav.albums, artists: fav.artists, tracks: fav.tracks };
   }
-  async addfavTrack(id: string) {
+  async addfavTrack(id: string, userId: string) {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
     const track = await this.trackR.findOneBy({ id });
     if (!track) throw new UnprocessableEntityException();
@@ -51,14 +44,13 @@ export class FavsService {
       .createQueryBuilder()
       .insert()
       .into('fav_use_track')
-      .values([
-        { track_id: id, fav_id: '05261413-9309-45ec-9ce1-9a2e811f3083' },
-      ])
+      .values([{ track_id: id, fav_id: userId }])
       .execute();
 
     return track;
   }
-  async removeFavTrack(id: string) {
+  async removeFavTrack(id: string, userId: string) {
+    if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
     await this.dataSource
       .createQueryBuilder()
       .delete()
@@ -67,7 +59,7 @@ export class FavsService {
       .execute();
   }
 
-  async addfavAlbum(id: string): Promise<Album> {
+  async addfavAlbum(id: string, userId: string): Promise<Album> {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
     const album = await this.albR.findOneBy({ id });
     if (!album) throw new UnprocessableEntityException();
@@ -75,11 +67,12 @@ export class FavsService {
       .createQueryBuilder()
       .insert()
       .into('fav_use_alb')
-      .values([{ alb_id: id, fav_id: '05261413-9309-45ec-9ce1-9a2e811f3083' }])
+      .values([{ alb_id: id, fav_id: userId }])
       .execute();
     return album;
   }
-  async removeFavAlbum(id: string) {
+  async removeFavAlbum(id: string, userId: string) {
+    if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
     await this.dataSource
       .createQueryBuilder()
       .delete()
@@ -88,7 +81,7 @@ export class FavsService {
       .execute();
   }
 
-  async addfavArtist(id: string): Promise<Artist> {
+  async addfavArtist(id: string, userId: string): Promise<Artist> {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
     const artist = await this.artR.findOneBy({ id });
     if (!artist) throw new UnprocessableEntityException();
@@ -96,11 +89,12 @@ export class FavsService {
       .createQueryBuilder()
       .insert()
       .into('fav_use_art')
-      .values([{ art_id: id, fav_id: '05261413-9309-45ec-9ce1-9a2e811f3083' }])
+      .values([{ art_id: id, fav_id: userId }])
       .execute();
     return artist;
   }
-  async removeFavArtist(id: string) {
+  async removeFavArtist(id: string, userId: string) {
+    if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
     await this.dataSource
       .createQueryBuilder()
       .delete()

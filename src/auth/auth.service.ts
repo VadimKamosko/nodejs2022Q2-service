@@ -7,16 +7,20 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserSchema } from 'src/entities/user.entity';
 import { CreateUserDTO } from 'src/user/DTO/create-user-dto';
-import { IsNull, Not, Repository } from 'typeorm';
+import { DataSource, IsNull, Not, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from './DTO/token-dto';
 import { FullUserDto } from 'src/user/DTO/full-user.dto';
+import { FavSchema } from 'src/entities/fav.entity';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(UserSchema)
     private usersRepository: Repository<UserSchema>,
+
+    @InjectRepository(FavSchema)
+    private favRep: Repository<FavSchema>,
     private JwtService: JwtService,
   ) {}
 
@@ -43,6 +47,10 @@ export class AuthService {
     const newUser = await this.usersRepository.insert(AuthUser);
 
     const id = newUser.identifiers[0].id;
+
+    await this.favRep.insert({
+      idUser: id,
+    });
 
     const tokens = await this.getTokens(id, AuthUser.login);
 
@@ -73,7 +81,7 @@ export class AuthService {
     await this.usersRepository
       .createQueryBuilder()
       .update({ hashToken: hash })
-      .where({ id: userId });
+      .where({ id: userId }).execute();
   }
 
   async getTokens(userId: string, login: string) {

@@ -12,12 +12,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserSchema } from 'src/entities/user.entity';
 import * as bcrypt from 'bcrypt';
+import { FavSchema } from 'src/entities/fav.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(UserSchema)
     private usersRepository: Repository<UserSchema>,
+
+    @InjectRepository(FavSchema)
+    private favRep: Repository<FavSchema>,
   ) {}
   async getAll(): Promise<FullUserDto[]> {
     return await this.usersRepository.find();
@@ -33,11 +37,16 @@ export class UserService {
 
     const newUser = await this.usersRepository.insert(user);
 
+    await this.favRep.insert({
+      idUser: newUser.identifiers[0].id,
+    });
+
     return this.findbyId(newUser.identifiers[0].id);
   }
   async remove(id: string) {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
     const index = await this.usersRepository.delete({ id });
+    // await this.favRep.delete({ idUser: id });
     if (!index.affected) throw new NotFoundException('User not found');
   }
   async update(id: string, user: UpdateUserDto) {

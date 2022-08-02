@@ -1,26 +1,21 @@
-import {
-  HttpStatus,
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  NestMiddleware,
-} from '@nestjs/common';
+import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 import { createWriteStream } from 'fs';
 import { NextFunction, Request, Response } from 'express';
 import { Stream } from 'stream';
 
 @Injectable()
 export class MyLogger implements NestMiddleware {
+  constructor() {
+    this.readable.pipe(this.writeableStream);
+  }
   private logger = new Logger('HTTP');
-  private readable = new Stream.Readable({
-    read() {},
-  });
   private writeableStream = createWriteStream('./logs/log.txt', {
     flags: 'w',
   });
+  private readable = new Stream.Readable({ read() {} });
   use(req: Request, res: Response, next: NextFunction) {
     const { originalUrl, body, query } = req;
-    res.on('finish', () => {
+    res.on('finish', () => {      
       const code = res.statusCode;
       const answer = `Url:${originalUrl}, body:${JSON.stringify(
         body,
@@ -33,13 +28,6 @@ export class MyLogger implements NestMiddleware {
     next();
   }
   ErrorLogging(answer: string) {
-    this.writeableStream.on('error', (e) => {
-      console.log(e);
-    });
     this.readable.push(answer + '\n');
-    this.readable.pipe(this.writeableStream);
-  }
-  catch(e) {
-    console.log(e);
   }
 }
