@@ -2,14 +2,14 @@ version: '3.8'
 
 services:
   prod:
-    image: kamoskovs/nodejs2022q2-service_prod
+    #image: kamoskovs/nodejs2022q2-service_prod
     env_file:
       - .env
-    # container_name: nodejs2022Q2-service
-    # build:
-    #   context: .
-    #   dockerfile: ./Dockerfile
-    #   target: development
+    container_name: nodejs2022Q2-service
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+      target: development
     command: npm run start:dev
     volumes:
       - .:/usr/src/app
@@ -24,13 +24,13 @@ services:
       TYPEORM_HOST: postgres
 
   postgres:
-    image: kamoskovs/nodejs2022q2-service_postgres
+    #image: kamoskovs/nodejs2022q2-service_postgres
     env_file:
       - .env
-    # container_name: mypostgres
-    # build:
-    #   context: .
-    #   dockerfile: ./DockerfilePg
+    container_name: mypostgres
+    build:
+      context: .
+      dockerfile: ./DockerfilePg
     networks:
       - nesjs-network
     environment:

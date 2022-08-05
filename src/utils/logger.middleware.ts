@@ -1,31 +1,51 @@
-import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
+import { Injectable, ConsoleLogger, NestMiddleware } from '@nestjs/common';
 import { createWriteStream, stat, WriteStream } from 'fs';
 import { NextFunction, Request, Response } from 'express';
 import internal, { Stream } from 'stream';
+
+const lvllog = {
+  0: 'off',
+  1: 'error',
+  2: 'log',
+  3: 'debug',
+};
 
 @Injectable()
 export class MyLogger implements NestMiddleware {
   constructor() {
     this.createNewStream();
+    this.logLvl = +process.env.LOGLVL > 3 ? 3 : +process.env.LOGLVL;
+    if (isNaN(this.logLvl)) this.logLvl = 1;
   }
-  private pathLog = './logs/log.txt';
-  private logger = new Logger('HTTP');
+
+  private pathLog: string;
+  private logger = new ConsoleLogger();
+  private logLvl: number;
   private writeableStream: WriteStream;
   private readable: internal.Readable;
+
   use(req: Request, res: Response, next: NextFunction) {
+    this.logger.setLogLevels([lvllog[this.logLvl]]);
     const { originalUrl, body, query } = req;
     res.on('finish', () => {
       const code = res.statusCode;
+      const header =
+        req.headers['authorization'] || req.headers['Authorization'];
       const answer = `Url:${originalUrl}, body:${JSON.stringify(
         body,
       )} Query:${JSON.stringify(query)}, Status:${code}`;
 
-      if (!code.toString().startsWith('2')) this.ErrorLogging(answer);
+      this.logger.debug(`header:${header} ,user:${JSON.stringify(req.user)}`);
 
-      this.logger.log(answer);
+      if (!code.toString().startsWith('2')) {
+        this.ErrorLogging(answer);
+        this.logger.error(answer);
+      } else this.logger.log(answer);
     });
+
     next();
   }
+
   ErrorLogging(answer: string) {
     stat(this.pathLog, (err, stat) => {
       if (stat.size >= +process.env.LOGSIZE) {
@@ -35,6 +55,7 @@ export class MyLogger implements NestMiddleware {
       this.readable.push(answer + '\n');
     });
   }
+
   createNewStream() {
     this.readable = new Stream.Readable({ read() {} });
     this.pathLog = './logs/log' + new Date().valueOf() + '.txt';
@@ -43,6 +64,7 @@ export class MyLogger implements NestMiddleware {
     });
     this.readable.pipe(this.writeableStream);
   }
+
   destroyStreams() {
     this.readable.unpipe(this.writeableStream);
     this.writeableStream.destroy();
