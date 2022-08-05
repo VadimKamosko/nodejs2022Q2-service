@@ -1,13 +1,9 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotAcceptableException,
-} from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserSchema } from 'src/entities/user.entity';
 import { CreateUserDTO } from 'src/user/DTO/create-user-dto';
-import { DataSource, IsNull, Not, Repository } from 'typeorm';
+import { IsNull, Not, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Tokens } from './DTO/token-dto';
 import { FullUserDto } from 'src/user/DTO/full-user.dto';
@@ -29,9 +25,12 @@ export class AuthService {
       login: AuthUser.login,
     });
 
-    if (!user) throw new ForbiddenException('Access denied');
+    if (!user) throw new ForbiddenException('Access denied');   
 
     const rtPass = await bcrypt.compare(AuthUser.password, user.password);
+
+    console.log(rtPass);
+    
 
     if (!rtPass) throw new ForbiddenException('Access denied');
 
@@ -52,9 +51,9 @@ export class AuthService {
       idUser: id,
     });
 
-    const tokens = await this.getTokens(id, AuthUser.login);
+    // const tokens = await this.getTokens(id, AuthUser.login);
 
-    await this.updateRtToken(id, tokens.refreshToken);
+    // await this.updateRtToken(id, tokens.refreshToken);
 
     const user = await this.usersRepository.findOneBy({ id });
     return user;
@@ -81,7 +80,8 @@ export class AuthService {
     await this.usersRepository
       .createQueryBuilder()
       .update({ hashToken: hash })
-      .where({ id: userId }).execute();
+      .where({ id: userId })
+      .execute();
   }
 
   async getTokens(userId: string, login: string) {
@@ -113,6 +113,6 @@ export class AuthService {
     };
   }
   hashData(password: string) {
-    return bcrypt.hash(password, 10);
+    return bcrypt.hash(password, +process.env.CRYPT_SALT || 10);
   }
 }

@@ -49,7 +49,7 @@ export class FavsService {
 
     return track;
   }
-  async removeFavTrack(id: string, userId: string) {
+  async removeFavTrack(id: string) {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
     await this.dataSource
       .createQueryBuilder()
@@ -71,7 +71,7 @@ export class FavsService {
       .execute();
     return album;
   }
-  async removeFavAlbum(id: string, userId: string) {
+  async removeFavAlbum(id: string) {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
     await this.dataSource
       .createQueryBuilder()
@@ -93,7 +93,7 @@ export class FavsService {
       .execute();
     return artist;
   }
-  async removeFavArtist(id: string, userId: string) {
+  async removeFavArtist(id: string) {
     if (!uuidValidate(id)) throw new BadRequestException('Invalid UUID');
     await this.dataSource
       .createQueryBuilder()

@@ -1,5 +1,5 @@
 import { Injectable, ConsoleLogger, NestMiddleware } from '@nestjs/common';
-import { createWriteStream, stat, WriteStream } from 'fs';
+import { createWriteStream, mkdirSync, stat, WriteStream } from 'fs';
 import { NextFunction, Request, Response } from 'express';
 import internal, { Stream } from 'stream';
 
@@ -16,6 +16,7 @@ export class MyLogger implements NestMiddleware {
     this.createNewStream();
     this.logLvl = +process.env.LOGLVL > 3 ? 3 : +process.env.LOGLVL;
     if (isNaN(this.logLvl)) this.logLvl = 1;
+    mkdirSync('./logs', { recursive: true });
   }
 
   private pathLog: string;
@@ -57,7 +58,11 @@ export class MyLogger implements NestMiddleware {
   }
 
   createNewStream() {
-    this.readable = new Stream.Readable({ read() {} });
+    this.readable = new Stream.Readable({
+      read() {
+        return;
+      },
+    });
     this.pathLog = './logs/log' + new Date().valueOf() + '.txt';
     this.writeableStream = createWriteStream(this.pathLog, {
       flags: 'a',

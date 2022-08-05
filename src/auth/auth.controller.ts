@@ -22,7 +22,7 @@ export class AuthController {
 
   @UseGuards(AuthGuard('JWT-refresh'))
   @Post('/refresh')
-  refToken(@Req() req: Request) {   
+  refToken(@Req() req: Request) {
     const user = req.user['sub'];
     return this.authService.refreshToken(user, req.user['rt']);
   }

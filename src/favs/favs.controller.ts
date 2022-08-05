@@ -36,9 +36,8 @@ export class FavsController {
   @UseGuards(AuthGuard('JWT'))
   @Delete('/track/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async removefavstrack(@Param('id') id, @Req() req: Request) {
-    const userId = req.user['sub'];
-    await this.favsService.removeFavTrack(id, userId);
+  async removefavstrack(@Param('id') id) {
+    await this.favsService.removeFavTrack(id);
   }
   @UseGuards(AuthGuard('JWT'))
   @Post('/album/:id')
@@ -49,9 +48,8 @@ export class FavsController {
   @UseGuards(AuthGuard('JWT'))
   @Delete('/album/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async removefavsAlbum(@Param('id') id, @Req() req: Request) {
-    const userId = req.user['sub'];
-    await this.favsService.removeFavAlbum(id, userId);
+  async removefavsAlbum(@Param('id') id) {
+    await this.favsService.removeFavAlbum(id);
   }
   @UseGuards(AuthGuard('JWT'))
   @Post('/artist/:id')
@@ -62,8 +60,7 @@ export class FavsController {
   @UseGuards(AuthGuard('JWT'))
   @Delete('/artist/:id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  async removefavsArtist(@Param('id') id, @Req() req: Request) {
-    const userId = req.user['sub'];
-    await this.favsService.removeFavArtist(id, userId);
+  async removefavsArtist(@Param('id') id) {
+    await this.favsService.removeFavArtist(id);
   }
 }

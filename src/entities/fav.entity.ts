@@ -8,7 +8,7 @@ export class FavSchema {
   @PrimaryColumn()
   idUser: string;
 
-  @ManyToMany((type) => ArtistSchema, {
+  @ManyToMany(() => ArtistSchema, {
     cascade: ['insert', 'update', 'remove'],
     onDelete: 'CASCADE',
   })
@@ -19,7 +19,7 @@ export class FavSchema {
   })
   artists: ArtistSchema[];
 
-  @ManyToMany((type) => AlbumSchema, {
+  @ManyToMany(() => AlbumSchema, {
     cascade: ['insert', 'update', 'remove'],
     onDelete: 'CASCADE',
   })
@@ -30,7 +30,7 @@ export class FavSchema {
   })
   albums: AlbumSchema[];
 
-  @ManyToMany((type) => TrackSchema, {
+  @ManyToMany(() => TrackSchema, {
     cascade: ['insert', 'update', 'remove'],
     onDelete: 'CASCADE',
   })

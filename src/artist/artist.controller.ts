@@ -21,7 +21,7 @@ export class ArtistController {
 
   @UseGuards(AuthGuard('JWT'))
   @Get()
-  getAll():Promise<Artist[]> {
+  getAll(): Promise<Artist[]> {
     return this.artistServise.getAll();
   }
   @UseGuards(AuthGuard('JWT'))

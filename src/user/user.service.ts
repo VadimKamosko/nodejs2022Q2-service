@@ -60,6 +60,6 @@ export class UserService {
   }
 
   hashPass(password: string) {
-    return bcrypt.hash(password, 10);
+    return bcrypt.hash(password, +process.env.CRYPT_SALT || 10);
   }
 }
