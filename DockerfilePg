@@ -1,0 +1,4 @@
+# Dockerfile
+FROM postgres:12.11-bullseye
+
+RUN mkdir -p /tmp/psql_data/
