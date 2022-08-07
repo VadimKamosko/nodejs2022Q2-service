@@ -18,11 +18,12 @@ git checkout devAuth
 ## Enviroment
 
 LOGSIZE - file size
+
 LOGLVL - log level
-    0 - log off
-    1 - error log
-    2 - the same as 1 plus log message
-    3 - the same as 2 plus auth message
+- 0 - log off
+- 1 - error log
+- 2 - the same as 1 plus log message
+- 3 - the same as 2 plus auth message
 
 Logger records only errors.
 
