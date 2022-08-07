@@ -10,12 +10,29 @@
 ```
 git clone {repository URL}
 ```
+
 ```
-git checkout devdb
+git checkout devAuth
 ```
+
+## Enviroment
+
+LOGSIZE - file size
+LOGLVL - log level
+    0 - log off
+    1 - error log
+    2 - the same as 1 plus log message
+    3 - the same as 2 plus auth message
+
+Logger records only errors.
+
 ## Containerization
 
-images are taken from docker hub
+```
+npm run docker
+```
+
+or
 
 ```
 docker compose up
@@ -26,11 +43,13 @@ docker compose up
 ```
 npm install
 ```
+
 ## Running application
 
 ```
 npm start
 ```
+
 You have to change the .env to connect to your database
 
 After starting the app on port (4000 as default) you can open
